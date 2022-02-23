@@ -314,7 +314,7 @@ for latticesize in latsizeList:
 				df_Final['run'] = seedInd
 
 				df_Final.to_csv(path_or_buf=titleT,index=False)
-	    if genDeviations:
+	    elif genDeviations:
 		for sdev in sdevList:   
 			for seedInd in range(numberOfSims):
 				ss = seedList[seedInd]
@@ -342,7 +342,7 @@ for latticesize in latsizeList:
 				df_Final['run'] = seedInd
 
 				df_Final.to_csv(path_or_buf=titleT,index=False)
-	    if genPatterns:
+	    elif genPatterns:
 		    datsp=run_simulation(tmax,dt,lattice,latticesize,nType,0,special='SP')
 		    recv ={'N':np.max(datsp['N'][-1]),'D':np.min(datsp['D'][-1]),'I':np.max(datsp['I'][-1])}
 		    senv ={'N':np.min(datsp['N'][-1]),'D':np.max(datsp['D'][-1]),'I':np.min(datsp['I'][-1])}
@@ -375,7 +375,26 @@ for latticesize in latsizeList:
 
 				df_Final.to_csv(path_or_buf=titleT,index=False)
 
-	    if genRandom:
+	    if latticesize !=16:
+			for seedInd in range(numberOfSims):
+				ss = seedList[seedInd]
+				np.random.seed(ss)
+				nrow=latticesize
+				ncol=latticesize
+
+				## solve model for randomized initial conditions
+				dat1=run_simulation(tmax,dt,lattice,latticesize,nType,nAmp)
+				titleT = "data/lattices/traj_"+str(nrow)+"x"+str(ncol)+"x1_"+nType+"_n"+str(nAmp)+"_s"+str(seedInd)+".dat"
+
+				##Put the data into a form that is easier to output
+				for k in dat1:
+					for i in range(len(dat1[k])):
+						dat1[k][i] = list(np.around(dat1[k][i].flatten(),decimals=3))
+				df_Final = pd.DataFrame(dat1)
+				df_Final['run'] = seedInd
+
+				df_Final.to_csv(path_or_buf=titleT,index=False)
+	    elif genRandom:
 			for seedInd in range(numberOfSims):
 				ss = seedList[seedInd]
 				np.random.seed(ss)

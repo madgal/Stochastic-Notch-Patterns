@@ -12,4 +12,34 @@ Files to generate the data include:
 
 Files to analyze the data:
 
++ analyze_data.py
++ aux_functions.py
 
+
+Files to generate figures in the manuscript:
+
++ basicFunctions.py
++ plot_script_functions.py
++ produce_data_for_figures.py
++ FiguresForMain.ipynb
+
+
+Files to generate figures in the SI:
+
++ pseudocount.py
++ get_data_for_si.py
++ get_psuedo_change.py
++ figures_for_SI.ipynb
+
+Files to generate movies for the SI:
+
+
+
+---
+Will need to create the directories 
+
+data/pattern
+data/lattices
+data/random
+data/dev
+data/mistakes

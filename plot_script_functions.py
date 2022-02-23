@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import time
 
+###   Functions in this file written by Federico Bocci unless specified
 
 def get_data(n, sim, sim_points, n_eq, file):
     '''
@@ -41,7 +42,8 @@ def get_data(n, sim, sim_points, n_eq, file):
                 count = count + 1
     return N, D
 
-def get_dataMadisVersion(file,tstart,tend,nsim):
+def get_dataVersion2(file,tstart,tend,nsim):
+	## Written by Madeline Galbraith
 
 	df = pd.read_csv(filepath_or_buffer=file,header=0).values[tstart:tend,:]
 

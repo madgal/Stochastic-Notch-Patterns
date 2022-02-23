@@ -12,29 +12,9 @@ import time
 
 
 ### The functions include ####
+## get_data
+## get_thresholds 
 	
-### [binned,binnedX,binnedY] = binValues(D,N,C):
-### [nr,dr,ns,ds,ntr,dtr,nts,dts] = get_thresholds(dN,dD):
-### dat = convert2timeSeries(dat,size):
-### [sn,sd,si] = readFile(fn,dirct):
-### [lattice,nType,nAmp] = getinfo(filen):
-### myData = get_data(filen,dirct):
-### (totalR+totalC)/2.  = getCorr(X):
-### states,states2,states3 = getSimStates(dD,dN,tD,tN):
-### [times,neighV,neighS] = getET_states(states,dN,dD):
-### [distD,avgR,avgS,avglR,avglS,states,contacts,mDN,sDN,mag,qres,switchSR,switchRS,switchiSR,switchiRS] = get_results(dN,dD,noiseType,noiseAmp,lattice,thresholds):
-### trajs = getTrajs(states,dN,dD):
-### U = pseudo_potential(N, D, bins):
-### i_s, j_s, i_r, j_r = find_minima(dist, xbins, notch, delta):
-### notch_thr_R, delta_thr_R, notch_thr_S, delta_thr_S = find_thresholds(x, U, i_s, j_s, i_r, j_r):
-### similarity  = get_results_simOnly(ddN,ddD)
-### [switchSR,switchRS,switchiSR,switchiRS,switcheffSR,switcheffRS,times,neighV,neighS]= get_results6(ddN,ddD,noiseType,noiseAmp,lattice,thresholds)
-### [mag,qres]= get_results5(ddN,ddD,noiseType,noiseAmp,lattice,thresholds)
-### [mDN,sDN]= get_results4(ddN,ddD,noiseType,noiseAmp,lattice,thresholds)
-### [contacts]= get_results3(ddN,ddD,noiseType,noiseAmp,lattice,thresholds)
-### [avgR,avgS,avglR,avglS,states]=f get_results2(ddN,ddD,noiseType,noiseAmp,lattice,thresholds)
-### distD =get_results1(ddN,ddD,noiseType,noiseAmp,lattice,thresholds)
-
 __thresholds__={}
 
 def binValues(D,N,C):
@@ -195,11 +175,9 @@ def getinfo(filen):
         lattice = lattice[:-2]
         nAmp = int(nAmp[1:])
         return [lattice,nType,nAmp]
-def get_data(filen,dirct,tstart=1000):
+def get_data(filen,tstart=1000):
     
-    [dataN,dataD,dataI] = readFile(filen,dirct,tstart)
-
-    #myData = [{'0':dataN[0]},{'0':dataD[0]},{'0':dataI[0]}]
+    [dataN,dataD,dataI] = readFile(filen,tstart)
     myData=[dataN,dataD,dataI]
 
     return myData
