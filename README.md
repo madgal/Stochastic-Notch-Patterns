@@ -33,6 +33,7 @@ Files to generate figures in the SI:
 
 Files to generate movies for the SI:
 
++SI_pattSim_rand_nucl.py
 
 
 ---
@@ -43,3 +44,13 @@ data/lattices
 data/random
 data/dev
 data/mistakes
+
+
+analysis/pattern
+analysis/lattices
+analysis/random
+analysis/dev
+analysis/mistakes
+
+
+movie_si_patt
