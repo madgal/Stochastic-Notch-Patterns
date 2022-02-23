@@ -1,77 +1,28 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
-import os
 from scipy.stats import pearsonr
-from matplotlib.colors import LinearSegmentedColormap
-from scipy.optimize import curve_fit
-from scipy.special import factorial
-from scipy.stats import poisson
-from scipy.stats import kde
-import time
 
 
 ### The functions include ####
-## get_data
-## get_thresholds 
+'''
+def convert2timeSeries(dat,size,tstart):
+def get_thresholds(dN,dD):
+def readFile(fn,dirct,tstart):
+def find_thresholds(x, U, i_s, j_s, i_r, j_r):
+def find_minima(dist, xbins, notch, delta):
+def pseudo_potential(N, D, bins):
+def get_data(filen,dirct,tstart=1000):
+def getCorr(X):
+def getSimStates(dD,dN,tD,tN):
+def getET_states(states,dN,dD,tfin=-1):
+def get_results1(ddN,ddD,thresholds):
+def get_results2(ddN,ddD,thresholds):
+def get_results3(ddN,ddD,thresholds):
+def get_results7(ddN,ddD,thresholds):
+def getCont(states):
+'''
 	
 __thresholds__={}
-
-def binValues(D,N,C):
-
-	if len(C)>0:
-		dataN = np.copy(N)
-		dataD = np.copy(D)
-		et = np.copy(C)
-
-		nbx = (np.max(dataD)-np.min(dataD))/100.
-		nby = (np.max(dataN)-np.min(dataN))/100.
-    	    	dist, xbin, ybin = np.histogram2d(dataD, dataN, bins=[nbx,nby])
-		xbin = np.round(xbin,2)
-		ybin = np.round(ybin,2)
-
-		binned={}
-		binnedX={}
-		binnedY={}
-		for i in range(len(xbin)):
-			Dv = xbin[i]
-			binned[Dv]={}
-			binnedX[Dv]={}
-			binnedY[Dv]={}
-			tmp=[]
-			if i==0:
-				Dv0=-1
-			else:
-				Dv0 = xbin[i-1]
-			tmpA = np.argwhere(dataD<=Dv)[:,0]
-			tmpB = np.argwhere(dataD>Dv0)[:,0]
-			tmpA = np.intersect1d(tmpA,tmpB)
-			for j in range(len(ybin)):
-				Nv = ybin[j]
-				if j==0:
-					Nv0=-1
-				else:
-					Nv0 = ybin[j-1]
-				tmpC = np.argwhere(dataN<=Nv)[:,0]
-				tmpD = np.argwhere(dataN>Nv0)[:,0]
-				tmpC = np.intersect1d(tmpC,tmpD)
-				tmp = np.intersect1d(tmpA,tmpC)
-				tmpV = et[tmp]
-				binned[Dv][Nv]=tmpV
-				binnedX[Dv][Nv]=dataD[tmp]
-				binnedY[Dv][Nv]=dataN[tmp]
-				dataN = np.delete(dataN,tmp)
-				dataD = np.delete(dataD,tmp)
-				et = np.delete(et,tmp)
-				if len(et)==0:
-					break
-
-	else:
-		binned={}
-		binnedX={}
-		binnedY={}
-	
-	return [binned,binnedX,binnedY]
 
 def get_thresholds(dN,dD):
     ## based off code written by Federico for finding the minima and getting the threshold at 0.1 of that.
@@ -116,8 +67,8 @@ def convert2timeSeries(dat,size,tstart):
 	
         return dat
 
-def readFile(fn,dirct,tstart):
-        df=  pd.read_csv(filepath_or_buffer=dirct+fn,header=0).values
+def readFile(fn,tstart):
+        df=  pd.read_csv(filepath_or_buffer=fn,header=0).values
 
         filex=(fn.split(".")[0]).split("_")
         lattice_size = filex[1]
@@ -155,29 +106,10 @@ def readFile(fn,dirct,tstart):
 
 
         return [sn,sd,si]
-def getinfoDetN(filen):
-        [tmp,lattice,noiseType,noiseAmp,ext] =filen.split(".")[0].split("_")  
-        noiseAmp = int(noiseAmp[1:])
-        lattice = lattice[:-2]
-        return [lattice,noiseType,noiseAmp,ext]
-
-def getinfoDetN2(filen):
-        [tmp,lattice,noiseType,noiseAmp,ext,sim] =filen.split(".")[0].split("_")  
-        noiseAmp = int(noiseAmp[1:])
-        lattice = lattice[:-2]
-        return [lattice,noiseType,noiseAmp,ext,sim]
-def getinfoNN(filen):
-        [tmp,lattice,ext] =filen.split(".")[0].split("_")  
-        lattice = lattice[:-2]
-        return [lattice,ext]
-def getinfo(filen):
-        [tmp,lattice,nType,nAmp] =filen.split(".")[0].split("_")  
-        lattice = lattice[:-2]
-        nAmp = int(nAmp[1:])
-        return [lattice,nType,nAmp]
 def get_data(filen,tstart=1000):
     
     [dataN,dataD,dataI] = readFile(filen,tstart)
+
     myData=[dataN,dataD,dataI]
 
     return myData
@@ -219,7 +151,7 @@ def getSimStates(dD,dN,tD,tN):
     iN = tN['S']+ (tN['R']-tN['S'])/2. 
     for k in range(len(dD)):
         if k==0:
-            ### set the initial as either sender or receiver by breaking the __thresholds__ in halfo
+            ### set the initial as either sender or receiver by breaking the thresholds in halfo
 	    tmp = (dD[k]>=dN[k])*1.+(dD[k]<dN[k])*2.
             #tmp = (dD[k]>iD)*(dN[k]<iN)*1. +(dD[k]<iD)*(dN[k]>iN)*2.
         else:
@@ -257,8 +189,10 @@ def getET_states(states,dN,dD,tfin=-1):
                 neighV[sim][rv][cv]={'eS2R':{'N':[],'D':[]},'eR2S':{'N':[],'D':[]},'bR2S':{'N':[],'D':[]},'effS2R':{'N':[],'D':[]},'effR2S':{'N':[],'D':[]},'bS2R':{'N':[],'D':[]},'etR2S':{'N':[],'D':[]},'etS2R':{'N':[],'D':[]},'resS':{'N':[],'D':[]},'resR':{'N':[],'D':[]},'resIr':{'N':[],'D':[]},'resIs':{'N':[],'D':[]}}
                 neighS[sim][rv][cv]={'eS2R':{'S':[],'R':[]},'eR2S':{'S':[],'R':[]},'effS2R':{'S':[],'R':[]},'effR2S':{'S':[],'R':[]},'bR2S':{'S':[],'R':[]},'bS2R':{'S':[],'R':[]},'etR2S':{'S':[],'R':[]},'etS2R':{'S':[],'R':[]},'resS':{'S':[],'R':[]},'resR':{'S':[],'R':[]},'resIr':{'S':[],'R':[]},'resIs':{'S':[],'R':[]}}
                 
-                #k=1            
-                k=10000            
+		if len(states[sim])>20000:
+                	k=10000            
+		else:
+                	k=1            
                 count=0
                 prevS1 = states[sim][k-1][rv][cv] ## should be  1-S, 2-R, 3-tS, or 4-tR
                 stTime,intTime,eTime=1,1,1
@@ -408,8 +342,7 @@ def getET_states(states,dN,dD,tfin=-1):
                     k+=1
     return [times[sim],neighV[sim],neighS[sim]]
 
-def get_results1(ddN,ddD,noiseType,noiseAmp,lattice,thresholds):
-    __thresholds__=thresholds
+def get_results1(ddN,ddD,thresholds):
     distD={}
     for sim in ddD:
         datD = ddD[sim]
@@ -420,8 +353,7 @@ def get_results1(ddN,ddD,noiseType,noiseAmp,lattice,thresholds):
             distD[sim]+=[getCorr(datD[k])]
     return distD
 
-def get_results2(ddN,ddD,noiseType,noiseAmp,lattice,thresholds):
-    __thresholds__=thresholds
+def get_results2(ddN,ddD,thresholds):
     states3,avgR,avgS,avglR,avglS,states2,states={},{},{},{},{},{},{}
     avgER,avgES={},{}
 
@@ -436,8 +368,8 @@ def get_results2(ddN,ddD,noiseType,noiseAmp,lattice,thresholds):
         avgER[sim]=[]
         avgES[sim]=[]
 
-        threshN={'S':__thresholds__[noiseType][lattice][noiseAmp]['S']['N'],'R':__thresholds__[noiseType][lattice][noiseAmp]['R']['N']}
-        threshD={'S':__thresholds__[noiseType][lattice][noiseAmp]['S']['D'],'R':__thresholds__[noiseType][lattice][noiseAmp]['R']['D']}
+        threshN={'S':thresholds['S']['N'],'R':thresholds['R']['N']}
+        threshD={'S':thresholds['S']['D'],'R':thresholds['R']['D']}
         [states[sim],states2[sim],states3[sim]] = getSimStates(datD,datN,threshD,threshN)    
         for k in range(len(datD)):
 	    tmp1 = states[sim][k]==1
@@ -454,8 +386,7 @@ def get_results2(ddN,ddD,noiseType,noiseAmp,lattice,thresholds):
 
     return [avgR,avgS,avglR,avglS,avgER,avgES,states]
 
-def get_results3(ddN,ddD,noiseType,noiseAmp,lattice,thresholds):
-    __thresholds__=thresholds
+def get_results3(ddN,ddD,thresholds):
     states2,states={},{}
     states3={}
     contacts={}
@@ -467,8 +398,8 @@ def get_results3(ddN,ddD,noiseType,noiseAmp,lattice,thresholds):
 	contacts[sim]={}
 	tmps,tmpo,tmpr=[],[],[]
 
-        threshN={'S':__thresholds__[noiseType][lattice][noiseAmp]['S']['N'],'R':__thresholds__[noiseType][lattice][noiseAmp]['R']['N']}
-        threshD={'S':__thresholds__[noiseType][lattice][noiseAmp]['S']['D'],'R':__thresholds__[noiseType][lattice][noiseAmp]['R']['D']}
+        threshN={'S':thresholds['S']['N'],'R':thresholds['R']['N']}
+        threshD={'S':thresholds['S']['D'],'R':thresholds['R']['D']}
         [states[sim],states2[sim],states3[sim]] = getSimStates(datD,datN,threshD,threshN)    
         for k in range(len(datD)):
             tmp = getCont(states2[sim][k])
@@ -482,124 +413,7 @@ def get_results3(ddN,ddD,noiseType,noiseAmp,lattice,thresholds):
 
     return [contacts]
 
-def get_results4(ddN,ddD,noiseType,noiseAmp,lattice,thresholds):
-
-    mDN,sDN = {},{}
-    for sim in ddD:
-        datD = ddD[sim]
-        datN = ddN[sim]        
-
-	mDN[sim]=[]
-	sDN[sim]=[]
-
-        dD = np.ndarray.flatten(datD)
-        dN = np.ndarray.flatten(datN)
-        for k in range(len(datD)):
-            mDN[sim]+=[np.mean(np.ndarray.flatten(dD[k])+np.ndarray.flatten(dN[k]))]
-            sDN[sim]+=[np.std(np.ndarray.flatten(dD[k])+np.ndarray.flatten(dN[k]))]
-
-    return [mDN,sDN]
-
-def get_results5(ddN,ddD,noiseType,noiseAmp,lattice,thresholds):
-    __thresholds__=thresholds
-    distD,avgR,avgS,avglR,avglS,states2,states={},{},{},{},{},{},{}
-    mag={}
-    qres,states3={},{}
-
-    for sim in ddD:
-    	[a,b] = ddN[sim][0].shape
-	numberL = a*b
-        datD = ddD[sim]
-        datN = ddN[sim]        
-
-        mag[sim]=[]
-	qres[sim]=[]
-
-        threshN={'S':__thresholds__[noiseType][lattice][noiseAmp]['S']['N'],'R':__thresholds__[noiseType][lattice][noiseAmp]['R']['N']}
-        threshD={'S':__thresholds__[noiseType][lattice][noiseAmp]['S']['D'],'R':__thresholds__[noiseType][lattice][noiseAmp]['R']['D']}
-        [states[sim],states2[sim],states3[sim]] = getSimStates(datD,datN,threshD,threshN)    
-	qtmp = states3[sim][0]*states3[sim][:]
-        for k in range(len(datD)):
-            mag[sim]+=[getMagnetization(datN[k],datD[k])]
-	    if k>0:
-	    	qres[sim]+=[(1./numberL)*np.sum(np.mean(qtmp[:k],axis=0))]
-	    else:
-	    	qres[sim]+=[(1./numberL)*np.sum(np.mean(qtmp[0],axis=0))]
-
-    return [mag,qres]
-def get_results6(ddN,ddD,noiseType,noiseAmp,lattice,thresholds):
-    __thresholds__=thresholds
-    distD,avgR,avgS,avglR,avglS,states2,states={},{},{},{},{},{},{}
-    qres,states3={},{}
-    switchSR,switchRS,switchiSR,switchiRS={},{},{},{}
-    switcheffSR,switcheffRS={},{}
-    times,neighV,neighS={},{},{}
-    for sim in ddD:
-        datD = ddD[sim]
-        datN = ddN[sim]        
-
-	times[sim]={}
-	neighV[sim]={}
-	neighS[sim]={}
-
-	switchSR[sim]=[]
-	switchRS[sim]=[]
-	switcheffSR[sim]=[]
-	switcheffRS[sim]=[]
-	switchiSR[sim]=[]
-	switchiRS[sim]=[]
-
-        threshN={'S':__thresholds__[noiseType][lattice][noiseAmp]['S']['N'],'R':__thresholds__[noiseType][lattice][noiseAmp]['R']['N']}
-        threshD={'S':__thresholds__[noiseType][lattice][noiseAmp]['S']['D'],'R':__thresholds__[noiseType][lattice][noiseAmp]['R']['D']}
-        [states[sim],states2[sim],states3[sim]] = getSimStates(datD,datN,threshD,threshN)    
-	t0= time.time()
-        [times[sim],neighV[sim],neighS[sim]]=getET_states(states,ddN,ddD)
-	print "et ",time.time()-t0
-        for k in range(len(datD)):
-	    if k>0:
-	        switchSR[sim]+=[np.sum((states[sim][k-1]==1)*(states[sim][k]==2))]
-	        switchiSR[sim]+=[np.sum((states[sim][k-1]==3)*(states[sim][k]==2))]
-		switcheffSR[sim]+=[np.sum((states[sim][k-1]==3)*(states[sim][k]==2))+np.sum((states[sim][k-1]==1)*(states[sim][k]==2))]
-
-	        switchRS[sim]+=[np.sum((states[sim][k-1]==2)*(states[sim][k]==1))]
-	        switchiRS[sim]+=[np.sum((states[sim][k-1]==4)*(states[sim][k]==1))]
-		switcheffRS[sim]+=[np.sum((states[sim][k-1]==4)*(states[sim][k]==1))+np.sum((states[sim][k-1]==2)*(states[sim][k]==1))]
-
-    return [switchSR,switchRS,switchiSR,switchiRS,switcheffSR,switcheffRS,times,neighV,neighS]
-def get_results6b(ddN,ddD,noiseType,noiseAmp,lattice,thresholds):
-    __thresholds__=thresholds
-    distD,avgR,avgS,avglR,avglS,states2,states={},{},{},{},{},{},{}
-    qres,states3={},{}
-    switchSR,switchRS,switchiSR,switchiRS={},{},{},{}
-    switcheffSR,switcheffRS={},{}
-    for sim in ddD:
-        datD = ddD[sim]
-        datN = ddN[sim]        
-
-	switchSR[sim]=[]
-	switchRS[sim]=[]
-	switcheffSR[sim]=[]
-	switcheffRS[sim]=[]
-	switchiSR[sim]=[]
-	switchiRS[sim]=[]
-
-        threshN={'S':__thresholds__[noiseType][lattice][noiseAmp]['S']['N'],'R':__thresholds__[noiseType][lattice][noiseAmp]['R']['N']}
-        threshD={'S':__thresholds__[noiseType][lattice][noiseAmp]['S']['D'],'R':__thresholds__[noiseType][lattice][noiseAmp]['R']['D']}
-        [states[sim],states2[sim],states3[sim]] = getSimStates(datD,datN,threshD,threshN)    
-        for k in range(len(datD)):
-	    if k>0:
-	        switchSR[sim]+=[np.sum((states[sim][k-1]==1)*(states[sim][k]==2))]
-	        switchiSR[sim]+=[np.sum((states[sim][k-1]==3)*(states[sim][k]==2))]
-		switcheffSR[sim]+=[np.sum((states[sim][k-1]==3)*(states[sim][k]==2))+np.sum((states[sim][k-1]==1)*(states[sim][k]==2))]
-
-	        switchRS[sim]+=[np.sum((states[sim][k-1]==2)*(states[sim][k]==1))]
-	        switchiRS[sim]+=[np.sum((states[sim][k-1]==4)*(states[sim][k]==1))]
-		switcheffRS[sim]+=[np.sum((states[sim][k-1]==4)*(states[sim][k]==1))+np.sum((states[sim][k-1]==2)*(states[sim][k]==1))]
-
-    return [switchSR,switchRS,switchiSR,switchiRS,switcheffSR,switcheffRS]
-
-def get_results7(ddN,ddD,noiseType,noiseAmp,lattice,thresholds,tfin=-1):
-    __thresholds__=thresholds
+def get_results7(ddN,ddD,thresholds,tfin=-1):
     distD,avgR,avgS,avglR,avglS,states2,states={},{},{},{},{},{},{}
     qres,states3={},{}
     times,neighV,neighS={},{},{}
@@ -611,37 +425,12 @@ def get_results7(ddN,ddD,noiseType,noiseAmp,lattice,thresholds,tfin=-1):
 	neighV[sim]={}
 	neighS[sim]={}
 
-        threshN={'S':__thresholds__[noiseType][lattice][noiseAmp]['S']['N'],'R':__thresholds__[noiseType][lattice][noiseAmp]['R']['N']}
-        threshD={'S':__thresholds__[noiseType][lattice][noiseAmp]['S']['D'],'R':__thresholds__[noiseType][lattice][noiseAmp]['R']['D']}
+        threshN={'S':thresholds['S']['N'],'R':thresholds['R']['N']}
+        threshD={'S':thresholds['S']['D'],'R':thresholds['R']['D']}
         [states[sim],states2[sim],states3[sim]] = getSimStates(datD,datN,threshD,threshN)    
-	t0= time.time()
         [times[sim],neighV[sim],neighS[sim]]=getET_states(states,ddN,ddD,tfin)
-	print "et ",time.time()-t0
 
     return [times,neighV,neighS]
-
-def getMagnetization(N,D):
-    NS = 567.
-    DS = 1561.
-    NR = 5139.
-    DR = 22.
-    
-    return 1./(len(N))*np.sum((N>=NR)*(D<=DR)*1.-(N<=NS)*(D>=DS)*1.)
-    #return (N>D)*1.-(N<D)*(1.)
-    #return 1./(len(N))*np.sum(N**2/(NR**2-NS**2)-D**2/(DR**2+DS**2))
-
-def get_results_simOnly(ddN,ddD):
-    distD={}
-    for sim in ddD:
-        datD = ddD[sim]
-        datN = ddN[sim]        
-
-        distD[sim]=[]
-
-        for k in range(len(datD)):
-            distD[sim]+=[getCorr(datD[k])]
-
-    return distD
 
 def getCont(states):
 
@@ -660,106 +449,6 @@ def getCont(states):
 	rr = np.sum((tmpa==states)*(states==2))+np.sum((tmpc==states)*(states==2))##+np.sum((tmpd!=states)*(states==2))+np.sum((tmpb!=states)*(states==2))
 	#print opp,ss,rr
 	return ss,opp,rr
-
-def getTrajs(states,dN,dD):
-    switch = {}
-    trajs ={}
-    for sim in states:
-        switch[sim]={}
-        trajs[sim]={}
-        Nrow,Ncol= states[sim][0].shape
-        for rv in range(Nrow):
-            switch[sim][rv]={}
-            trajs[sim][rv]={}
-            for cv in range(Ncol):
-                trajs[sim][rv][cv]={'resS':{'N':[],'D':[]},'resR':{'N':[],'D':[]},'S2R':{'N':[],'D':[]},'R2S':{'N':[],'D':[]},'iS':{'N':[],'D':[]},'iR':{'N':[],'D':[]},'ret2S':{'N':[],'D':[]},'ret2R':{'N':[],'D':[]}}
-                switch[sim][rv][cv]={12:[],13:[],24:[],21:[],31:[],32:[],41:[],42:[]}
-                
-                k=0            
-                while ((k<len(states[sim])) and (states[sim][k][rv][cv]==states[sim][k-1][rv][cv])):
-                    k+=1
-
-                count=0
-                prevS = states[sim][k-1][rv][cv] ## should be  1-S, 2-R, 3-tS, or 4-tR
-                while (k <len(states[sim])):
-                    if states[sim][k][rv][cv]!=states[sim][k-1][rv][cv]:#else:
-                        if states[sim][k-1][rv][cv]==1:# prev was S
-                            if states[sim][k][rv][cv]==3:
-                                switch[sim][rv][cv][13]+=[[count,k]]# going from S to transition
-                            elif states[sim][k][rv][cv]==2:
-                                switch[sim][rv][cv][12]+=[[count,k]]# going from S to R
-                        elif states[sim][k-1][rv][cv]==2:# prev was R
-                            if states[sim][k][rv][cv]==4:
-                                switch[sim][rv][cv][24]+=[[count,k]]# going from R to transition
-                            elif states[sim][k][rv][cv]==1:
-                                switch[sim][rv][cv][21]+=[[count,k]]# going from R to S
-                        elif states[sim][k-1][rv][cv]==3:# prev was transS
-                            if states[sim][k][rv][cv]==1:
-                                switch[sim][rv][cv][31]+=[[count,k]]# going from transS to S
-                            elif states[sim][k][rv][cv]==2:
-                                switch[sim][rv][cv][32]+=[[count,k]]# going from  transS to R
-                        elif states[sim][k-1][rv][cv]==4:# prev was transR
-                            if states[sim][k][rv][cv]==1:
-                                switch[sim][rv][cv][41]+=[[count,k]]# going from transR to S
-                            elif states[sim][k][rv][cv]==2:
-                                switch[sim][rv][cv][42]+=[[count,k]]# going from  transR to R
-                        #tmpN,tmpD=[],[]
-                        count=k
-                    k+=1
-
-    for sim in trajs:
-        for rv in trajs[sim]:
-            for cv in trajs[sim][rv]:
-                for key in switch[sim][rv][cv]:
-                    for i in range(len(switch[sim][rv][cv][key])):
-
-                        if key in [12,21]:
-                            padding =20
-                        else:#key in 
-                            padding=1
-
-                        start = switch[sim][rv][cv][key][i][0]-padding
-                        end = switch[sim][rv][cv][key][i][1]+padding
-                        if start<0:		
-                            start=0
-                        if end > len(dN[sim]):
-                            end = len(dN[sim])
-
-                        NV,DV=[],[]
-                        for i in range(start,end):
-                            NV +=[dN[sim][i][rv][cv]]
-                            DV +=[dD[sim][i][rv][cv]]
-
-                        if key==13:	
-                            trajs[sim][rv][cv]['resS']['N']=NV
-                            trajs[sim][rv][cv]['resS']['D']=DV
-                        elif key==12:	
-                            trajs[sim][rv][cv]['S2R']['N']=NV
-                            trajs[sim][rv][cv]['S2R']['D']=DV
-                        elif key==24:	
-                            trajs[sim][rv][cv]['resR']['N']=NV
-                            trajs[sim][rv][cv]['resR']['D']=DV
-                        elif key==21:	
-                            trajs[sim][rv][cv]['R2S']['N']=NV
-                            trajs[sim][rv][cv]['R2S']['D']=DV
-                        elif key==31:	
-                            trajs[sim][rv][cv]['ret2S']['N']=NV
-                            trajs[sim][rv][cv]['ret2S']['D']=DV
-                        elif key==42:	
-                            trajs[sim][rv][cv]['ret2R']['N']=NV
-                            trajs[sim][rv][cv]['ret2R']['D']=DV
-                        elif key==32:	
-                            trajs[sim][rv][cv]['iS']['N']=NV
-                            trajs[sim][rv][cv]['iS']['D']=DV
-                        elif key==41:	
-                            trajs[sim][rv][cv]['iR']['N']=NV
-                            trajs[sim][rv][cv]['iR']['D']=DV
-
-
-
-    #trajs[sim][rv][cv]={'resS':{'N':[],'D':[]},'resR':{'N':[],'D':[]},'S2R':{'N':[],'D':[]},'R2S':{'N':[],'D':[]},'iS':{'N':[],'D':[]},'iR':{'N':[],'D':[]},'ret2S':{'N':[],'D':[]},'ret2R':{'N':[],'D':[]}}
-    return trajs
-
 
 ##############################
 def pseudo_potential(N, D, bins):
