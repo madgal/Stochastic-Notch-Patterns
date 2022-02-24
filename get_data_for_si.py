@@ -1,3 +1,4 @@
+##Written by Madeline Galbraith to generate data for easily plotting SI
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
