@@ -25,6 +25,7 @@ def getCont(states):
 __thresholds__={}
 
 def get_thresholds(dN,dD):
+    ## written by Madeline Galbraith
     ## based off code written by Federico for finding the minima and getting the threshold at 0.1 of that.
 
     N= dN[0]
@@ -53,6 +54,7 @@ def get_thresholds(dN,dD):
 
 #### functions for reading and analyzing data
 def convert2timeSeries(dat,size,tstart):
+    	## written by Madeline Galbraith
         ## takes the column from the trajectory files and
         ## converts it into a time series with each step as an NxN lattice
 
@@ -68,6 +70,7 @@ def convert2timeSeries(dat,size,tstart):
         return dat
 
 def readFile(fn,tstart):
+	## written by Madeline Galbraith
         df=  pd.read_csv(filepath_or_buffer=fn,header=0).values
 
         filex=(fn.split(".")[0]).split("_")
@@ -107,7 +110,7 @@ def readFile(fn,tstart):
 
         return [sn,sd,si]
 def get_data(filen,tstart=1000):
-    
+    ## written by Madeline Galbraith
     [dataN,dataD,dataI] = readFile(filen,tstart)
 
     myData=[dataN,dataD,dataI]
@@ -115,6 +118,7 @@ def get_data(filen,tstart=1000):
     return myData
 
 def getCorr(X):
+	## written by Madeline Galbraith
         [nr,nc] = X.shape
 
         totalC,count=0,0
@@ -137,6 +141,7 @@ def getCorr(X):
 
         return (totalR+totalC)/2.
 def getSimStates(dD,dN,tD,tN):
+    ## written by Madeline Galbraith
     ## dD is Delta values
     ## dN is Notch values
     ## tD is threshold values for delta
@@ -166,7 +171,7 @@ def getSimStates(dD,dN,tD,tN):
     return [states,states2,states3]
 
 def getET_states(states,dN,dD,tfin=-1):
-
+    ## written by Madeline Galbraith
     ## first determine how long it is in S or R state
     ## save that in resS or resR
     ## then determine how long in transition state 
@@ -215,12 +220,6 @@ def getET_states(states,dN,dD,tfin=-1):
                             neighS[sim][rv][cv]['resS']['R']+=[np.mean(numRs)]
                             neighS[sim][rv][cv]['resS']['S']+=[np.mean(numSs)]
                             if current==2:
-				#print 'StoR',stTime,intTime
-                                #times[sim][rv][cv]['eS2R']+=[stTime/10.]
-                                #neighV[sim][rv][cv]['eS2R']['N']+=[np.mean(tmpNs)]
-                                #neighV[sim][rv][cv]['eS2R']['D']+=[np.mean(tmpDs)]
-                                #neighS[sim][rv][cv]['eS2R']['R']+=[np.mean(numRs)]
-                                #neighS[sim][rv][cv]['eS2R']['S']+=[np.mean(numSs)]
                                 times[sim][rv][cv]['effS2R']+=[eTime/10.]
                                 neighV[sim][rv][cv]['effS2R']['N']+=[np.mean(tmpNe)]
                                 neighV[sim][rv][cv]['effS2R']['D']+=[np.mean(tmpDe)]
@@ -237,12 +236,6 @@ def getET_states(states,dN,dD,tfin=-1):
                             neighS[sim][rv][cv]['resR']['R']+=[np.mean(numRs)]
                             neighS[sim][rv][cv]['resR']['S']+=[np.mean(numSs)]
                             if current==1:
-				#print 'RtoS',stTime,intTime
-                                #times[sim][rv][cv]['eR2S']+=[stTime/10.]
-                                #neighV[sim][rv][cv]['eR2S']['N']+=[np.mean(tmpNs)]
-                                #neighV[sim][rv][cv]['eR2S']['D']+=[np.mean(tmpDs)]
-                                #neighS[sim][rv][cv]['eR2S']['R']+=[np.mean(numRs)]
-                                #neighS[sim][rv][cv]['eR2S']['S']+=[np.mean(numSs)]
                                 times[sim][rv][cv]['effR2S']+=[eTime/10.]
                                 neighV[sim][rv][cv]['effR2S']['N']+=[np.mean(tmpNe)]
                                 neighV[sim][rv][cv]['effR2S']['D']+=[np.mean(tmpDe)]
@@ -259,22 +252,6 @@ def getET_states(states,dN,dD,tfin=-1):
                             neighS[sim][rv][cv]['resIs']['R']+=[np.mean(numRi)]
                             neighS[sim][rv][cv]['resIs']['S']+=[np.mean(numSi)]
                             if current==2:# s2r
-				#print 'IstoR',stTime,intTime
-                                #times[sim][rv][cv]['etS2R']+=[intTime/10.]
-                                #neighV[sim][rv][cv]['etS2R']['N']+=[np.mean(tmpNi)]
-                                #neighV[sim][rv][cv]['etS2R']['D']+=[np.mean(tmpDi)]
-                                #neighS[sim][rv][cv]['etS2R']['R']+=[np.mean(numRi)]
-                                #neighS[sim][rv][cv]['etS2R']['S']+=[np.mean(numSi)]
-                                #times[sim][rv][cv]['eS2R']+= [stTime/10.]
-                                #neighV[sim][rv][cv]['eS2R']['N']+=[np.mean(tmpNs)]
-                                #neighV[sim][rv][cv]['eS2R']['D']+=[np.mean(tmpDs)]
-                                #neighS[sim][rv][cv]['eS2R']['R']+=[np.mean(numRs)]
-                                #neighS[sim][rv][cv]['eS2R']['S']+=[np.mean(numSs)]
-                                #times[sim][rv][cv]['bS2R']+= [(stTime+intTime)/10.]
-                                #neighV[sim][rv][cv]['bS2R']['N']+=[np.mean(np.concatenate([tmpNs,tmpNi]))]
-                                #neighV[sim][rv][cv]['bS2R']['D']+=[np.mean(np.concatenate([tmpDs,tmpDi]))]
-                                #neighS[sim][rv][cv]['bS2R']['R']+=[np.mean(np.concatenate([numRs,numRi]))]
-                                #neighS[sim][rv][cv]['bS2R']['S']+=[np.mean(np.concatenate([numSs,numSi]))]
                                 times[sim][rv][cv]['effS2R']+=[eTime/10.]
                                 neighV[sim][rv][cv]['effS2R']['N']+=[np.mean(tmpNe)]
                                 neighV[sim][rv][cv]['effS2R']['D']+=[np.mean(tmpDe)]
@@ -291,22 +268,6 @@ def getET_states(states,dN,dD,tfin=-1):
                             neighS[sim][rv][cv]['resIr']['R']+=[np.mean(numRi)]
                             neighS[sim][rv][cv]['resIr']['S']+=[np.mean(numSi)]
                             if current==1:#r2S
-				#print 'IrtoS',stTime,intTime
-                                #times[sim][rv][cv]['etR2S']+=[intTime/10.]
-                                #neighV[sim][rv][cv]['etR2S']['N']+=[np.mean(tmpNi)]
-                                #neighV[sim][rv][cv]['etR2S']['D']+=[np.mean(tmpDi)]
-                                #neighS[sim][rv][cv]['etR2S']['R']+=[np.mean(numRi)]
-                                #neighS[sim][rv][cv]['etR2S']['S']+=[np.mean(numSi)]
-                                #times[sim][rv][cv]['eR2S']+= [stTime/10.]
-                                #neighV[sim][rv][cv]['eR2S']['N']+=[np.mean(tmpNs)]
-                                #neighV[sim][rv][cv]['eR2S']['D']+=[np.mean(tmpDs)]
-                                #neighS[sim][rv][cv]['eR2S']['R']+=[np.mean(numRs)]
-                                #neighS[sim][rv][cv]['eR2S']['S']+=[np.mean(numSs)]
-                                #times[sim][rv][cv]['bR2S']+= [(stTime+intTime)/10.]
-                                #neighV[sim][rv][cv]['bR2S']['N']+=[np.mean(np.concatenate([tmpNs,tmpNi]))]
-                                #neighV[sim][rv][cv]['bR2S']['D']+=[np.mean(np.concatenate([tmpDs,tmpDi]))]
-                                #neighS[sim][rv][cv]['bR2S']['R']+=[np.mean(np.concatenate([numRs,numRi]))]
-                                #neighS[sim][rv][cv]['bR2S']['S']+=[np.mean(np.concatenate([numSs,numSi]))]
                                 times[sim][rv][cv]['effR2S']+=[eTime/10.]
                                 neighV[sim][rv][cv]['effR2S']['N']+=[np.mean(tmpNe)]
                                 neighV[sim][rv][cv]['effR2S']['D']+=[np.mean(tmpDe)]
@@ -337,12 +298,12 @@ def getET_states(states,dN,dD,tfin=-1):
                     numRe+=[(states[sim][k][(rv-1)%Nrow][cv]==2.)*1.+(states[sim][k][(rv+1)%Nrow][cv]==2.)*1.+(states[sim][k][rv][(cv-1)%Ncol]==2.)*1.+(states[sim][k][rv][(cv+1)%Ncol]==2.)*1.]
                     eTime+=1
 
-		    #print current, prevS1,stTime,intTime
                     prevS1 = current
                     k+=1
     return [times[sim],neighV[sim],neighS[sim]]
 
 def get_results1(ddN,ddD,thresholds):
+    ## written by Madeline Galbraith
     distD={}
     for sim in ddD:
         datD = ddD[sim]
@@ -354,6 +315,7 @@ def get_results1(ddN,ddD,thresholds):
     return distD
 
 def get_results2(ddN,ddD,thresholds):
+    ## written by Madeline Galbraith
     states3,avgR,avgS,avglR,avglS,states2,states={},{},{},{},{},{},{}
     avgER,avgES={},{}
 
@@ -387,6 +349,7 @@ def get_results2(ddN,ddD,thresholds):
     return [avgR,avgS,avglR,avglS,avgER,avgES,states]
 
 def get_results3(ddN,ddD,thresholds):
+    ## written by Madeline Galbraith
     states2,states={},{}
     states3={}
     contacts={}
@@ -414,6 +377,7 @@ def get_results3(ddN,ddD,thresholds):
     return [contacts]
 
 def get_results7(ddN,ddD,thresholds,tfin=-1):
+    ## written by Madeline Galbraith
     distD,avgR,avgS,avglR,avglS,states2,states={},{},{},{},{},{},{}
     qres,states3={},{}
     times,neighV,neighS={},{},{}
@@ -433,7 +397,7 @@ def get_results7(ddN,ddD,thresholds,tfin=-1):
     return [times,neighV,neighS]
 
 def getCont(states):
-
+	## written by Madeline Galbraith
         ss,opp,rr=[],[],[]
 
 	states = np.array(states)
