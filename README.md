@@ -18,7 +18,7 @@ Files to analyze the data:
 
 Files to generate figures in the manuscript:
 
-+ basicFunctions.py
++ aux_functions.py
 + plot_script_functions.py
 + produce_data_for_figures.py
 + FiguresForMain.ipynb
