@@ -1,3 +1,4 @@
+## Written by Madeline Galbraith
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -12,6 +13,7 @@ import matplotlib
 matplotlib.rcParams.update({'font.size': 20})
 
 from aux_functions import *
+
 
 ## setup to be able to run parallel
 from mpi4py import MPI
