@@ -4,7 +4,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib.colors import ListedColormap
-from basicFunctions import *
+from auxFunctions import *
 
 ##Written by Madeline Galbraith
 
