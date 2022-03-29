@@ -6,8 +6,8 @@ Please cite the preprint at https://arxiv.org/abs/2202.00763 if you use this cod
 
 Files to generate the data include:
 
-+seedsForSims.txt
-+generate_data.py
++ seedsForSims.txt
++ generate_data.py
 
 
 Files to analyze the data:
@@ -33,24 +33,24 @@ Files to generate figures in the SI:
 
 Files to generate movies for the SI:
 
-+SI_pattSim_rand_nucl.py
++ SI_pattSim_rand_nucl.py
 
 
 ---
 Will need to create the directories 
 
-data/pattern
-data/lattices
-data/random
-data/dev
-data/mistakes
++ data/pattern
++ data/lattices
++ data/random
++ data/dev
++ data/mistakes
 
 
-analysis/pattern
-analysis/lattices
-analysis/random
-analysis/dev
-analysis/mistakes
++ analysis/pattern
++ analysis/lattices
++ analysis/random
++ analysis/dev
++ analysis/mistakes
 
 
-movie_si_patt
++ movie_si_patt
