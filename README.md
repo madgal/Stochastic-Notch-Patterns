@@ -33,8 +33,12 @@ Files to generate figures in the SI:
 
 Files to generate movies for the SI:
 
-+SI_pattSim_rand_nucl.py
++ SI_pattSim_rand_nucl.py
 
+Files to generate and analyze one cell gillespie simulation:
+
++ gill_oneCell_2020.py
++ analyze_oneCell.py 
 
 ---
 Will need to create the directories 
