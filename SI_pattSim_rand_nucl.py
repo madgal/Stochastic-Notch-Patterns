@@ -4,12 +4,15 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib.colors import ListedColormap
-from basicFunctions import *
+from auxFunctions import *
 
+##Written by Madeline Galbraith
 
 tend=3000
 
 def getrandPatt():
+    # returns the 2d pattern as a function of delta in the cells
+    # starting from randomized initial conditions
     [dN,dD,dI] = get_data("data/random/traj_16x16x1_white_n0.dat",tstart=0)
     kk = dN.keys()[0]
     [nr,dr,ns,ds,ntr,dtr,nts,dts] = get_thresholds(dN,dD)
@@ -24,6 +27,8 @@ def getrandPatt():
     
     return dD[kk][:tend],minv,maxv
 def getcheckPatt():
+    # returns the 2d pattern as a function of delta in the cells
+    # starting from checkerboard initial conditions
     [dN,dD,dI] = get_data("data/pattern/traj_16x16x1_shot_n0_p8_s0.dat",tstart=0)
     kk = dN.keys()[0]
     [nr,dr,ns,ds,ntr,dtr,nts,dts] = get_thresholds(dN,dD)
@@ -31,6 +36,8 @@ def getcheckPatt():
     return dD[kk][:tend],minv,maxv
 
 def getnuclPatt():
+    # returns the 2d pattern as a function of delta in the cells
+    # starting from nucleating initial conditions
     [dN,dD,dI] = get_data("data/pattern/traj_16x16x1_shot_n0_p7_s0.dat",tstart=0)
     kk = dN.keys()[0]
     [nr,dr,ns,ds,ntr,dtr,nts,dts] = get_thresholds(dN,dD)
@@ -46,18 +53,24 @@ def getnuclPatt():
     return dD[kk][:tend],minv,maxv
 
 def getSim_randFull_det():
+    # returns the similarity metric as a function of time
+    # starting from randomized initial conditions
     fileN = "data/random/simM_16x16_shot_n0_s0.txt"
     filX=pd.read_csv(fileN)
     x =np.arange(0,len(filX['Sim'].values[:tend]))*0.1
     return x,filX['Sim'].values[:tend]
 
 def getSim_checkFull_det():
+    # returns the similarity metric as a function of time
+    # starting from checkerboard initial conditions
     fileN = "data/pattern/simM_16x16_shot_n0_p8_s0.txt"
     filX=pd.read_csv(fileN)
     x =np.arange(0,len(filX['Sim'].values[:tend]))*0.1
     return x,filX['Sim'].values[:tend]
 
 def getSim_nuclFull_det():
+    # returns the similarity metric as a function of time
+    # starting from nucleating initial conditions
     fileN = "data/pattern/simM_16x16_shot_n0_p7_s0.txt"
     filX=pd.read_csv(fileN)
     x =np.arange(0,len(filX['Sim'].values[:tend]))*0.1
@@ -70,6 +83,8 @@ def getSim_nuclFull_det():
 pattIn,minv,maxv=getnuclPatt()
 timeN,sim_nucl = getSim_nuclFull_det()
 
+## output all the figures to generate a movie showing the patterns and similarity
+## startin from nucleating initial conditions
 vmin,vmax = minv,maxv
 for k in range(len(timeN)):
 	fig2 = plt.figure(constrained_layout=True)
@@ -96,6 +111,8 @@ for k in range(len(timeN)):
 pattIr,minv,maxv=getrandPatt()
 time,sim_rand = getSim_randFull_det()
 
+## output all the figures to generate a movie showing the patterns and similarity
+## startin from randomized initial conditions
 vmin,vmax = minv,maxv
 for k in range(len(timeN)):
 	fig2 = plt.figure(constrained_layout=True,figsize=(8,16))

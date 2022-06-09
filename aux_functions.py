@@ -25,7 +25,12 @@ def getCont(states):
 __thresholds__={}
 
 def get_thresholds(dN,dD):
+<<<<<<< HEAD
     ## based off code written by Federico for finding the minima and getting the threshold at 0.1 of U
+=======
+    ## written by Madeline Galbraith
+    ## based off code written by Federico for finding the minima and getting the threshold at 0.1 of that.
+>>>>>>> main
 
     key = list(dN.keys())[0]
     ## select the correct data from the file
@@ -51,7 +56,11 @@ def get_thresholds(dN,dD):
     return [nr,dr,ns,ds,ntr,dtr,nts,dts]
 
 def convert2timeSeries(dat,size,tstart):
+<<<<<<< HEAD
 	#### functions for reading and analyzing data
+=======
+    	## written by Madeline Galbraith
+>>>>>>> main
         ## takes the column from the trajectory files and
         ## converts it into a time series with each step as an NxN lattice
 
@@ -67,9 +76,13 @@ def convert2timeSeries(dat,size,tstart):
         return dat
 
 def readFile(fn,tstart):
+<<<<<<< HEAD
 	## read the file and put it into the appropriate format
 	## catch and fix any exceptions that may occur during reading 
 
+=======
+	## written by Madeline Galbraith
+>>>>>>> main
         df=  pd.read_csv(filepath_or_buffer=fn,header=0).values
 
         filex=(fn.split(".")[0]).split("_")
@@ -108,14 +121,22 @@ def readFile(fn,tstart):
         return [sn,sd,si]
 
 def get_data(filen,tstart=1000):
+<<<<<<< HEAD
     ## return the data as a tuple of Notch, Delta, and NICD copy numbers
+=======
+    ## written by Madeline Galbraith
+>>>>>>> main
     [dataN,dataD,dataI] = readFile(filen,tstart)
     myData=[dataN,dataD,dataI]
     return myData
 
 def getCorr(X):
+<<<<<<< HEAD
 	## get the correlation of the lattice
 	## use the pearson correlation across the rows and columns, then average
+=======
+	## written by Madeline Galbraith
+>>>>>>> main
         [nr,nc] = X.shape
 
 	## pearson correlation of columns
@@ -141,6 +162,7 @@ def getCorr(X):
         return (totalR+totalC)/2.
 
 def getSimStates(dD,dN,tD,tN):
+    ## written by Madeline Galbraith
     ## dD is Delta values
     ## dN is Notch values
     ## tD is threshold values for delta
@@ -168,6 +190,7 @@ def getSimStates(dD,dN,tD,tN):
 
     return [states,states2,states3]
 
+<<<<<<< HEAD
 def updateDictionary(dict,Nv,Dv,Rv,Sv):
         dict['N']+=[np.mean(tmpNs)]
         dict['D']+=[np.mean(tmpDs)]
@@ -180,6 +203,10 @@ def updateState(data,comp,Nrow,Ncol):
     return ((data[(rv-1)%Nrow][cv]==comp)*1.+(data[(rv+1)%Nrow][cv]==comp)*1.+(data[rv][(cv-1)%Ncol]==comp)*1.+(data[rv][(cv+1)%Ncol]==comp)*1.)
 
 def getET_states(states,dN,dD,tfin=-1):
+=======
+def getET_states(states,dN,dD,tfin=-1):
+    ## written by Madeline Galbraith
+>>>>>>> main
     ## first determine how long it is in S or R state
     ## save that in resS or resR
     ## then determine how long in transition state 
@@ -234,8 +261,16 @@ def getET_states(states,dN,dD,tfin=-1):
                     if current!=prevS1:
                         if prevS1==1:# prev was S
                             times[sim][rv][cv]['resS']+=[stTime/10.]
+<<<<<<< HEAD
                             neighV[sim][rv][cv]['resS'] = updateDictionary(neighV[sim][rv][cv]['resS'],tmpNs,tmpDs,numRs,numSs)
                             if current==2:## currently R and previous was S == cell transitioned
+=======
+                            neighV[sim][rv][cv]['resS']['N']+=[np.mean(tmpNs)]
+                            neighV[sim][rv][cv]['resS']['D']+=[np.mean(tmpDs)]
+                            neighS[sim][rv][cv]['resS']['R']+=[np.mean(numRs)]
+                            neighS[sim][rv][cv]['resS']['S']+=[np.mean(numSs)]
+                            if current==2:
+>>>>>>> main
                                 times[sim][rv][cv]['effS2R']+=[eTime/10.]
                                 neighV[sim][rv][cv]['effS2R'] = updateDictionary(neighV[sim][rv][cv]['effS2R'],tmpNe,tmpDe,numRe,numSe)
 				## reset transition variables
@@ -300,7 +335,11 @@ def getET_states(states,dN,dD,tfin=-1):
 
 ###
 def get_results1(ddN,ddD,thresholds):
+<<<<<<< HEAD
     ### get the similarity metric
+=======
+    ## written by Madeline Galbraith
+>>>>>>> main
     distD={}
     for sim in ddD:
         datD = ddD[sim]
@@ -312,7 +351,11 @@ def get_results1(ddN,ddD,thresholds):
     return distD
 
 def get_results2(ddN,ddD,thresholds):
+<<<<<<< HEAD
     ### get the average values of properties
+=======
+    ## written by Madeline Galbraith
+>>>>>>> main
     states3,avgR,avgS,avglR,avglS,states2,states={},{},{},{},{},{},{}
     avgER,avgES={},{}
 
@@ -346,7 +389,11 @@ def get_results2(ddN,ddD,thresholds):
     return [avgR,avgS,avglR,avglS,avgER,avgES,states]
 
 def get_results3(ddN,ddD,thresholds):
+<<<<<<< HEAD
     ## get the percent of correct contacts
+=======
+    ## written by Madeline Galbraith
+>>>>>>> main
     states2,states={},{}
     states3={}
     contacts={}
@@ -374,7 +421,11 @@ def get_results3(ddN,ddD,thresholds):
     return [contacts]
 
 def get_results7(ddN,ddD,thresholds,tfin=-1):
+<<<<<<< HEAD
     ## get the escape times
+=======
+    ## written by Madeline Galbraith
+>>>>>>> main
     distD,avgR,avgS,avglR,avglS,states2,states={},{},{},{},{},{},{}
     qres,states3={},{}
     times,neighV,neighS={},{},{}
@@ -394,7 +445,7 @@ def get_results7(ddN,ddD,thresholds,tfin=-1):
     return [times,neighV,neighS]
 
 def getCont(states):
-
+	## written by Madeline Galbraith
         ss,opp,rr=[],[],[]
 
 	states = np.array(states)

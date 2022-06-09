@@ -1,3 +1,4 @@
+##Written by Madeline Galbraith to generate data for easily plotting SI
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -5,7 +6,7 @@ import os
 import matplotlib as mpl
 import matplotlib.gridspec as gridspec
 import matplotlib
-from basicFunctions import *
+from auxFunctions import *
 from plot_script_functions import get_dataVersion2
 from plot_script_functions import pseudo_potential
 from plot_script_functions import find_minima

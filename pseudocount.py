@@ -5,7 +5,7 @@ import os
 import matplotlib as mpl
 import matplotlib.gridspec as gridspec
 import matplotlib
-from basicFunctions import *
+from auxFunctions import *
 
 from function_for_si_figures import *
 

@@ -6,8 +6,8 @@ Please cite the preprint at https://arxiv.org/abs/2202.00763 if you use this cod
 
 Files to generate the data include:
 
-+seedsForSims.txt
-+generate_data.py
++ seedsForSims.txt
++ generate_data.py
 
 
 Files to analyze the data:
@@ -18,7 +18,7 @@ Files to analyze the data:
 
 Files to generate figures in the manuscript:
 
-+ basicFunctions.py
++ aux_functions.py
 + plot_script_functions.py
 + produce_data_for_figures.py
 + FiguresForMain.ipynb
@@ -43,18 +43,18 @@ Files to generate and analyze one cell gillespie simulation:
 ---
 Will need to create the directories 
 
-data/pattern
-data/lattices
-data/random
-data/dev
-data/mistakes
++ data/pattern
++ data/lattices
++ data/random
++ data/dev
++ data/mistakes
 
 
-analysis/pattern
-analysis/lattices
-analysis/random
-analysis/dev
-analysis/mistakes
++ analysis/pattern
++ analysis/lattices
++ analysis/random
++ analysis/dev
++ analysis/mistakes
 
 
-movie_si_patt
++ movie_si_patt
