@@ -17,9 +17,6 @@ def getrandPatt():
     kk = dN.keys()[0]
     [nr,dr,ns,ds,ntr,dtr,nts,dts] = get_thresholds(dN,dD)
     
-    #iD = dtr+ (dts-dtr)/2.
-    #iN = nts+ (ntr-nts)/2.
-    #patt=[]
     minv=3000
     maxv=0
     for i in range(tend):#len(dD[kk])):
@@ -27,9 +24,8 @@ def getrandPatt():
 		minv = np.min(dD[kk][i])
 	if maxv<np.max(dD[kk][i]):
 		maxv = np.max(dD[kk][i])
-    #	    patt += [(dD[kk][i]>iD)*(dN[kk][i]<iN)*1.+(dD[kk][i]<iD)*(dN[kk][i]>iN)*2.]
     
-    return dD[kk][:tend],minv,maxv#patt
+    return dD[kk][:tend],minv,maxv
 def getcheckPatt():
     # returns the 2d pattern as a function of delta in the cells
     # starting from checkerboard initial conditions
@@ -37,13 +33,7 @@ def getcheckPatt():
     kk = dN.keys()[0]
     [nr,dr,ns,ds,ntr,dtr,nts,dts] = get_thresholds(dN,dD)
     
-    #iD = dtr+ (dts-dtr)/2.
-    #iN = nts+ (ntr-nts)/2.
-    #patt=[]
-    #for i in range(tend):#len(dD[kk])):
-    #	    patt += [(dD[kk][i]>iD)*(dN[kk][i]<iN)*1.+(dD[kk][i]<iD)*(dN[kk][i]>iN)*2.]
-    
-    return dD[kk][:tend],minv,maxv#patt
+    return dD[kk][:tend],minv,maxv
 
 def getnuclPatt():
     # returns the 2d pattern as a function of delta in the cells
@@ -52,9 +42,6 @@ def getnuclPatt():
     kk = dN.keys()[0]
     [nr,dr,ns,ds,ntr,dtr,nts,dts] = get_thresholds(dN,dD)
     
-    #iD = dtr+ (dts-dtr)/2.
-    #iN = nts+ (ntr-nts)/2.
-    #patt=[]
     minv=3000
     maxv=0
     for i in range(tend):#len(dD[kk])):
@@ -62,15 +49,14 @@ def getnuclPatt():
 		minv = np.min(dD[kk][i])
 	if maxv<np.max(dD[kk][i]):
 		maxv = np.max(dD[kk][i])
-    #        patt += [(dD[kk][i]>iD)*(dN[kk][i]<iN)*(1.)+(dD[kk][i]<iD)*(dN[kk][i]>iN)*(2.)]
     
-    return dD[kk][:tend],minv,maxv#patt
+    return dD[kk][:tend],minv,maxv
 
 def getSim_randFull_det():
     # returns the similarity metric as a function of time
     # starting from randomized initial conditions
     fileN = "data/random/simM_16x16_shot_n0_s0.txt"
-    filX=pd.read_csv(fileN)#.dropna()
+    filX=pd.read_csv(fileN)
     x =np.arange(0,len(filX['Sim'].values[:tend]))*0.1
     return x,filX['Sim'].values[:tend]
 
@@ -78,18 +64,17 @@ def getSim_checkFull_det():
     # returns the similarity metric as a function of time
     # starting from checkerboard initial conditions
     fileN = "data/pattern/simM_16x16_shot_n0_p8_s0.txt"
-    filX=pd.read_csv(fileN)#.dropna()
+    filX=pd.read_csv(fileN)
     x =np.arange(0,len(filX['Sim'].values[:tend]))*0.1
     return x,filX['Sim'].values[:tend]
+
 def getSim_nuclFull_det():
     # returns the similarity metric as a function of time
     # starting from nucleating initial conditions
     fileN = "data/pattern/simM_16x16_shot_n0_p7_s0.txt"
-    filX=pd.read_csv(fileN)#.dropna()
+    filX=pd.read_csv(fileN)
     x =np.arange(0,len(filX['Sim'].values[:tend]))*0.1
     return x,filX['Sim'].values[:tend]
-
-
 
 ######################
 ######################
@@ -121,9 +106,7 @@ for k in range(len(timeN)):
 
 	cbar = plt.colorbar(im,cax=axe,label='Delta (molecules)')
 	fig2.savefig('movie_si_patt/si_pattnuc_'+str(k)+'.png',bbox_inches='tight')
-	#plt.show()
 	plt.close()
-
 
 pattIr,minv,maxv=getrandPatt()
 time,sim_rand = getSim_randFull_det()
