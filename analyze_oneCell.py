@@ -1,3 +1,6 @@
+## Written by Madeline Galbraith
+## Last edited: July 2022
+
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
