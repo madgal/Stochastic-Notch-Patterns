@@ -1,31 +1,54 @@
+# One cell Gillespie simulation to quantify intrinsic noise
+# Written by Madeline Galbraith
+# Last modified July 2022
+
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-from gill_functions import *
-import time
 import json
 
-## The parallel part start
+
+####################
+## Allow the calculation to be parallelized
+####################
 from mpi4py import MPI
-comm = MPI.COMM_WORLD
 myrank = MPI.COMM_WORLD.Get_rank()
 nprocs = MPI.COMM_WORLD.Get_size()
 stat = MPI.Status()
-### The values in the salt&pepper case
+
+####################
+### The values in the checkerboard
+####################
 ## Sender:    N = 567,    D = 1561, I = 1.2
 ## Receiver:  N = 5138.8, D = 21.7, I = 802
 
-####
-def __getExt(X,size):
+####################
+#### parameters ####
+####################
+N0 = 5.0e+2      
+D0 = 1.0e+3  
+I0 = 2.0e+2      ## hill factor
 
-	if size[0]==2:
-		return np.array([X[1],X[0]])
-	else:
-	    return 1./4.*(np.roll(X,1,axis=0)+np.roll(X,-1,axis=0)+np.roll(X,1,axis=1)+
-			  np.roll(X,-1,axis=1))
+kc = 5.0e-4     #1/hour/molecule
+kt = 5.0e-5     #1/hour/molecule
 
+nI = 2.0e+0
+
+lambdaN = 2.0e+0   # no dimension
+lambdaD = 0.0e+0   # no dimension
+
+gamma = 1.0e-1   #1/hour
+gamma_i = 5.0e-1 #1/hour
+
+####################
+####################
+#################
+def shiftedHill(X,X0,nX,lambdY):
+	return lambdY+(1.0 - lambdY)/(1.0+(X/X0)**nX)
+####################
 def simulate_gill(iterations,ss,Next,Dext,equil=30000):
 
+	## set up the simulation
 	np.random.seed(ss)
 	time=0.
 	results={}
@@ -35,6 +58,8 @@ def simulate_gill(iterations,ss,Next,Dext,equil=30000):
 	results['N']=[N]
 	results['D']=[D]
 	results['I']=[I]
+
+	## run gillespie algorithm
 	for ind in range(iterations):
 		tmp=[]
 		r1,r2 = np.random.uniform(0,1,2)
@@ -56,6 +81,8 @@ def simulate_gill(iterations,ss,Next,Dext,equil=30000):
 	
 	return results
 
+
+#### Functions and definitions directly related to Gillespie algorithm
 def __updateRes(N,D,I,r2,Next,Dext):
 	if (__X1(N,D,I,Next,Dext)<=r2) and (r2< __X2(N,D,I,Next,Dext)):
 		return [N-1,D,I+1]
@@ -76,21 +103,10 @@ def __updateRes(N,D,I,r2,Next,Dext):
 		return [N,D+1,I]
 		#return [N+1,D,I]
 
-#### parameters ####
-N0 = 5.0e+2      
-D0 = 1.0e+3  
-I0 = 2.0e+2      ## hill factor
 
-kc = 5.0e-4     #1/hour/molecule
-kt = 5.0e-5     #1/hour/molecule
-
-nI = 2.0e+0
-
-lambdaN = 2.0e+0   # no dimension
-lambdaD = 0.0e+0   # no dimension
-
-gamma = 1.0e-1   #1/hour
-gamma_i = 5.0e-1 #1/hour
+##############
+### propensities
+##############
 def __a1(N,D,I,Next,Dext):
 	return kt*N*Dext				#	0.00005*N*Dext*(I-1)  gives N=[0]
 def __a2(N,D,I,Next,Dext):
@@ -110,6 +126,10 @@ def __a8(N,D,I,Next,Dext):
 def __a0(N,D,I,Next,Dext):
 	return __a1(N,D,I,Next,Dext)+__a2(N,D,I,Next,Dext)+__a3(N,D,I,Next,Dext)+__a4(N,D,I,Next,Dext)+__a5(N,D,I,Next,Dext)+__a6(N,D,I,Next,Dext)+__a7(N,D,I,Next,Dext)+__a8(N,D,I,Next,Dext)
 
+
+##############
+## probabilities
+##############
 def __X1(N,D,I,Next,Dext):
 	return 0
 def __X2(N,D,I,Next,Dext):
@@ -131,19 +151,12 @@ def __X9(N,D,I,Next,Dext):
 
 
 
-#################33
-def shiftedHill(X,X0,nX,lambdY):
-	return lambdY+(1.0 - lambdY)/(1.0+(X/X0)**nX)
 
 ###############
-###############
-###############
-nAmpList=[]
-nmax=100
-step=2
 
-
+##############################
 ############ Start simulation ###########
+##############################
 def main():
 	seedList=pd.read_csv(filepath_or_buffer='seedsForSims.txt',header=None).values[:,0]
 	simNum=10
@@ -151,45 +164,19 @@ def main():
 	Next = 567
 	Dext = 1561
 
-	Nlist = np.arange(0,6000,100)
-	Dlist = np.arange(0,3000,100)
-
-
-	data={'Next':[],'Dext':[],'mag':[],'Nd':[],'Dd':[]}
 	simList=[myrank,myrank+nprocs]
-
-	'''
 	etime=0
-	for Next in Nlist:
-		for Dext in Dlist:
-			t0=time.time()
-			for seedInd in simList:
-				ss = seedList[seedInd]
+	pairs = [[567,1561],[5139,22]]
+	for [Next,Dext] in pairs:
+		for seedInd in simList:
+			ss = seedList[seedInd]
 
+			res = simulate_gill(iterations,ss,Next,Dext,equil=etime)
 
-				res = simulate_gill(iterations,ss,Next,Dext,equil=etime)
-
-				fullRes={'res':res,'Next':Next,'Dext':Dext,'equil':etime,'seed':ss,'iterations':iterations}
-				title='data_gil/oneCell/data_'+str(Next)+"_"+str(Dext)+"_s"+str(seedInd)
-                                json_data=json.dumps(fullRes,indent=4)
-                                with open(title+'.json','w') as outfile:
-                                        outfile.write(json_data)
-	'''
-
-	etime=0
-	for Next in [567,5139]:
-		for Dext in [1561,22]:
-			t0=time.time()
-			for seedInd in simList:
-				ss = seedList[seedInd]
-
-
-				res = simulate_gill(iterations,ss,Next,Dext,equil=etime)
-
-				fullRes={'res':res,'Next':Next,'Dext':Dext,'equil':etime,'seed':ss,'iterations':iterations}
-				title='data_gil/oneCell/data_'+str(Next)+"_"+str(Dext)+"_s"+str(seedInd)
-                                json_data=json.dumps(fullRes,indent=4)
-                                with open(title+'.json','w') as outfile:
-                                        outfile.write(json_data)
+			fullRes={'res':res,'Next':Next,'Dext':Dext,'equil':etime,'seed':ss,'iterations':iterations}
+			title='data_gil/oneCell/data_'+str(Next)+"_"+str(Dext)+"_s"+str(seedInd)
+                        json_data=json.dumps(fullRes,indent=4)
+                        with open(title+'.json','w') as outfile:
+                                outfile.write(json_data)
 
 main()
