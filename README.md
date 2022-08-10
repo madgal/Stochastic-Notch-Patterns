@@ -1,7 +1,11 @@
 # Stochastic-Notch-Patterns
 Here you'll find the code for generating and analyzing Notch-Delta mediated pattern formation. Our results can be found in "Stochastic fluctuations promote ordered pattern formation of cells in the Notch-Delta signaling pathway"
 
-Please cite the preprint at https://arxiv.org/abs/2202.00763 if you use this code. 
+Please cite the publication if you use this code. 
+
+Galbraith, M., Bocci, F. & Onuchic, J. N. Stochastic fluctuations promote ordered pattern formation of cells in the Notch-Delta signaling pathway. PLOS Computational Biology (2022) doi:10.1371/journal.pcbi.1010306.
+  
+https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1010306
 
 
 Files to generate the data include:
