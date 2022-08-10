@@ -1,12 +1,8 @@
-## Written by Federico Bocci and edited by Madeline Galbraith
-## Last edited: July 2022
-
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import time
 
-###   Functions in this file written by Federico Bocci unless specified
 
 def get_data(n, sim, sim_points, n_eq, file):
     '''
@@ -46,7 +42,6 @@ def get_data(n, sim, sim_points, n_eq, file):
     return N, D
 
 def get_dataVersion2(file,tstart,tend,nsim):
-	## Written by Madeline Galbraith
 
 	df = pd.read_csv(filepath_or_buffer=file,header=0).values[tstart:tend,:]
 
